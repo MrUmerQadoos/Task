@@ -33,7 +33,7 @@ export default function LoginPage() {
 
     if (response.ok) {
       document.cookie = `Authorization=${result.token}; path=/; secure; samesite=strict;`;
-      push("/"); // Use push for client-side navigation
+      push("https://shop-main-25a4n02zj-mrumerqadoos-projects.vercel.app/"); // Use push for client-side navigation
     } else {
       if (result.error) {
         setError("password", { type: "server", message: result.error });
