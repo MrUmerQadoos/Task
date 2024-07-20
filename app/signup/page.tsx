@@ -4,6 +4,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef } from "react";
 import { signUpSchema, Inputs } from "../lib/types";
+import Link from "next/link";
 
 export default function ZodForm() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -20,21 +21,11 @@ export default function ZodForm() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        confirmPassword: data.confirmPassword,
-      }),
+      body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-      alert("Something went wrong, Please try again.");
-    } else {
-      window.location.href = "/login";
-    }
-
     const result = await response.json();
+
     if (result.errors) {
       if (result.errors.name) {
         setError("name", { type: "server", message: result.errors.name });
@@ -50,97 +41,93 @@ export default function ZodForm() {
           type: "server",
           message: result.errors.confirmPassword,
         });
-      } else {
-        alert("Something went worng");
       }
     } else {
-      alert("Sign Up Successfull");
+      alert("Sign Up Successful");
       formRef.current?.reset();
+      window.location.href = "/login";
     }
   };
 
   return (
-    <main className="flex h-screen items-center justify-center">
+    <main className="flex h-screen items-center justify-center bg-gray-50">
       <form
         ref={formRef}
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-slate-100 px-10 py-4 shadow-md rounded w-1/4 flex flex-col justify-between"
+        className="bg-white px-8 py-6 shadow-lg rounded-lg w-full max-w-md flex flex-col"
       >
-        <h1 className="text-3xl font-bold text-gray-700">Sign Up</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          Sign Up
+        </h1>
 
-        <div className="mt-6">
-          {/* Name Field */}
-          <div className="pb-4">
-            <input
-              {...register("name")}
-              type="text"
-              name="name"
-              placeholder="Name"
-              className="mt-1 w-full rounded text-sm p-2"
-            />
-            {errors.name && (
-              <p className="text-red-500 text-xs">{errors.name.message}</p>
-            )}
-          </div>
-
-          {/* Email Field */}
-          <div className="pb-4">
-            <input
-              {...register("email")}
-              type="email"
-              name="email"
-              placeholder="Email"
-              className="mt-1 w-full rounded  text-sm p-2"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-xs">{errors.email.message}</p>
-            )}
-          </div>
-
-          {/* Password Field */}
-
-          <div className="pb-4">
-            <input
-              {...register("password")}
-              type="password"
-              name="password"
-              placeholder="Password"
-              className="block mt-1 w-full rounded  text-sm p-2"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-xs">{errors.password.message}</p>
-            )}
-          </div>
-
-          {/* Confirm Password Field */}
-
-          <div className="pb-4">
-            <input
-              {...register("confirmPassword")}
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              className="mt-1 w-full rounded text-sm p-2"
-            />
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-xs">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-
-            {/* Submit Button */}
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className={`mt-4 w-full bg-teal-500 text-white p-2 rounded ${
-                isSubmitting ? "opacity-50 cursor-none" : "opacity-100"
-              } `}
-            >
-              Sign Up
-            </button>
-          </div>
+        <div className="mb-4">
+          <input
+            {...register("name")}
+            type="text"
+            placeholder="Name"
+            className="w-full border border-gray-300 rounded p-3 text-gray-700 focus:outline-none focus:border-teal-500"
+          />
+          {errors.name && (
+            <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+          )}
         </div>
+
+        <div className="mb-4">
+          <input
+            {...register("email")}
+            type="email"
+            placeholder="Email"
+            className="w-full border border-gray-300 rounded p-3 text-gray-700 focus:outline-none focus:border-teal-500"
+          />
+          {errors.email && (
+            <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+          )}
+        </div>
+
+        <div className="mb-4">
+          <input
+            {...register("password")}
+            type="password"
+            placeholder="Password"
+            className="w-full border border-gray-300 rounded p-3 text-gray-700 focus:outline-none focus:border-teal-500"
+          />
+          {errors.password && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.password.message}
+            </p>
+          )}
+        </div>
+
+        <div className="mb-6">
+          <input
+            {...register("confirmPassword")}
+            type="password"
+            placeholder="Confirm Password"
+            className="w-full border border-gray-300 rounded p-3 text-gray-700 focus:outline-none focus:border-teal-500"
+          />
+          {errors.confirmPassword && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.confirmPassword.message}
+            </p>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className={`mb-4 w-full bg-teal-500 text-white p-3 rounded hover:bg-teal-600 transition ${
+            isSubmitting ? "opacity-50 cursor-not-allowed" : "opacity-100"
+          }`}
+        >
+          Sign Up
+        </button>
+
+        <Link
+          href="/login"
+          className="text-center text-teal-500 hover:text-teal-600 transition"
+        >
+          Already have an account? Login
+        </Link>
       </form>
     </main>
   );
