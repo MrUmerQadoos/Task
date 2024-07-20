@@ -30,7 +30,7 @@ export default function LoginPage() {
 
     if (response.ok) {
       document.cookie = `Authorization=${result.token}; path=/; secure; samesite=strict;`;
-      window.location.href = "/"; // Redirect to a protected page
+      window.location.href = "/";
     } else {
       if (result.error) {
         setError("password", { type: "server", message: result.error });

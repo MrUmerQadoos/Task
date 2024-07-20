@@ -7,7 +7,6 @@ import { signUpSchema, Inputs } from "../lib/types";
 
 export default function ZodForm() {
   const formRef = useRef<HTMLFormElement>(null);
-  //React Hook Form (useForm functionality)
   const {
     register,
     handleSubmit,
@@ -15,7 +14,6 @@ export default function ZodForm() {
     formState: { errors, isSubmitting },
   } = useForm<Inputs>({ resolver: zodResolver(signUpSchema) });
 
-  //  onSubmit - to send data to server
   const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
     const response = await fetch("/api/signup", {
       method: "POST",
@@ -31,29 +29,23 @@ export default function ZodForm() {
     });
 
     if (!response.ok) {
-      // Handle the error case as before
       alert("Something went wrong, Please try again.");
     } else {
-      // Redirect to the login page upon successful signup
       window.location.href = "/login";
     }
 
     const result = await response.json();
     if (result.errors) {
       if (result.errors.name) {
-        //set errors in react form errors object
         setError("name", { type: "server", message: result.errors.name });
       } else if (result.errors.email) {
-        //set errors in react form errors object
         setError("email", { type: "server", message: result.errors.email });
       } else if (result.errors.password) {
-        //set errors in react form errors object
         setError("password", {
           type: "server",
           message: result.errors.password,
         });
       } else if (result.errors.confirmPassword) {
-        //set errors in react form errors object
         setError("confirmPassword", {
           type: "server",
           message: result.errors.confirmPassword,
@@ -65,8 +57,6 @@ export default function ZodForm() {
       alert("Sign Up Successfull");
       formRef.current?.reset();
     }
-
-    // console.log(result);
   };
 
   return (

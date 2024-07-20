@@ -15,12 +15,12 @@ export async function middleware(request: NextRequest) {
   try {
     const { payload } = await jose.jwtVerify(jwt, secret);
     console.log(payload);
-    return NextResponse.next(); // Allow access if JWT is valid
+    return NextResponse.next();
   } catch (err) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 }
 
 export const config = {
-  matcher: ["/protected/:path*", "/"], // Exclude /login from middleware
+  matcher: ["/protected/:path*", "/"],
 };

@@ -15,12 +15,10 @@ export const POST = async (request: any) => {
   console.log(activeProducts);
 
   try {
-    // 1. Find products from Stripe that match products from the cart.
     for (const product of products) {
-      // Assuming the product from the cart has 'title' instead of 'name'
-      const productName = product.title; // Use 'title' if that's the property in your cart
-      const productPrice = product.price; // Assuming price is correct
-      const productQuantity = product.quantity; // Assuming quantity is correct
+      const productName = product.title;
+      const productPrice = product.price;
+      const productQuantity = product.quantity;
 
       if (!productName || !productPrice) {
         console.log(
@@ -28,7 +26,7 @@ export const POST = async (request: any) => {
             product
           )}`
         );
-        continue; // Skip processing this product
+        continue;
       }
 
       const matchedProducts = activeProducts?.data?.find(
@@ -37,7 +35,6 @@ export const POST = async (request: any) => {
           stripeProduct.name.toLowerCase() === productName.toLowerCase()
       );
 
-      // 2. If product didn't exist in Stripe, then add this product to Stripe.
       if (!matchedProducts) {
         await stripe.products.create({
           name: productName,
@@ -53,21 +50,19 @@ export const POST = async (request: any) => {
     throw error;
   }
 
-  // 3. Once the new product has been added to Stripe, fetch products again with updated products from Stripe
   activeProducts = await stripe.products.list({ active: true });
   let stripeProducts: any[] = [];
 
   for (const product of products) {
-    const productName = product.title; // Use 'title' if that's the property in your cart
-    const productQuantity = product.quantity; // Assuming quantity is correct
-
+    const productName = product.title;
+    const productQuantity = product.quantity;
     if (!productName || !productQuantity) {
       console.log(
         `Product name or quantity is missing for product: ${JSON.stringify(
           product
         )}`
       );
-      continue; // Skip processing this product
+      continue;
     }
 
     const stripeProduct = activeProducts?.data?.find(
@@ -84,7 +79,6 @@ export const POST = async (request: any) => {
     }
   }
 
-  // Ensure `line_items` is populated
   if (stripeProducts.length === 0) {
     return NextResponse.json(
       { error: "No valid products found" },
@@ -92,7 +86,6 @@ export const POST = async (request: any) => {
     );
   }
 
-  // 4. Create Checkout Sessions from body params.
   try {
     const session = await stripe.checkout.sessions.create({
       line_items: stripeProducts,

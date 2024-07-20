@@ -1,4 +1,3 @@
-// src/app/api/products/route.ts
 import { NextResponse } from "next/server";
 
 const apiURL = "https://fakestoreapi.com/products";
