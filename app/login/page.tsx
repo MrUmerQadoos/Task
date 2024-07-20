@@ -3,7 +3,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 interface Inputs {
   email: string;
@@ -11,8 +11,8 @@ interface Inputs {
 }
 
 export default function LoginPage() {
-  const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
+  const { push } = useRouter(); // Use useRouter hook here
   const {
     register,
     handleSubmit,
@@ -33,7 +33,7 @@ export default function LoginPage() {
 
     if (response.ok) {
       document.cookie = `Authorization=${result.token}; path=/; secure; samesite=strict;`;
-      router.push("/"); // Use router.push for redirection
+      push("/"); // Use push for client-side navigation
     } else {
       if (result.error) {
         setError("password", { type: "server", message: result.error });
