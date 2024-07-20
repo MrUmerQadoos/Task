@@ -90,8 +90,8 @@ export const POST = async (request: any) => {
     const session = await stripe.checkout.sessions.create({
       line_items: stripeProducts,
       mode: "payment",
-      success_url: `https://shop-main-czqzm4d0j-mrumerqadoos-projects.vercel.app/success`,
-      cancel_url: `https://shop-main-czqzm4d0j-mrumerqadoos-projects.vercel.app/`,
+      success_url: `https://shop-main-4x7q7kedt-mrumerqadoos-projects.vercel.app/success`,
+      cancel_url: `https://shop-main-4x7q7kedt-mrumerqadoos-projects.vercel.app/`,
     });
 
     return NextResponse.json({ url: session.url });
